@@ -9,6 +9,8 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1)
   const [posts, setPosts] = useState([])
   const [paginatedData, setPaginatedData] = useState([])
+  const [inputPage, setInputPage] = useState(1)
+
   console.log(posts)
 
   useEffect(() => {
@@ -83,11 +85,17 @@ function App() {
 
       <div className=" col-md-12 w-100 d-flex" style={{ justifyContent: "space-between" }}>
 
-        <select className="form-select" style={{ width: "100px" }} onChange={(e) => setRowSize(e.target.value)}>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="15">15</option>
-        </select>
+        <div className='d-flex'>
+          <select className="form-select" style={{ width: "100px" }} onChange={(e) => setRowSize(e.target.value)}>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+          </select>
+
+          <input type='text' value={inputPage} onChange={(e) => setInputPage(e.target.value)}
+            className='form-control'  style={{ width: "50px",marginLeft: "2rem",marginRight: "0.5rem"}} />
+          <a className='btn btn-primary' onClick={() => setCurrentPage(inputPage)}>Go</a>
+        </div>
 
         <div className="">
           <div className="btn-group" role="group" aria-label="Basic example">
