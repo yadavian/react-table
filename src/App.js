@@ -30,10 +30,14 @@ function App() {
       const startingIndexOfPage = ((currentPage * rowSize) - rowSize);
       const endingIndexOfPage = ((currentPage * rowSize) - 1) + 1;
 
+      console.log(startingIndexOfPage, endingIndexOfPage)
+
       let data1 = []
       for (let i = startingIndexOfPage; i < endingIndexOfPage; i++) {
         data1.push(data[i])
       }
+
+      console.log('data1', data1)
       setPaginatedData(data1)
     }
   }
@@ -60,10 +64,12 @@ function App() {
             {
               paginatedData && paginatedData.map((d, i) => {
                 return (
-                  <tr key={i}>
-                    <td scope="row">{d.id}</td>
-                    <td>{d.title}</td>
-                  </tr>
+                  <>
+                    {d?.id && <tr key={i}>
+                      <td scope="row">{d?.id}</td>
+                      <td>{d?.title}</td>
+                    </tr>}
+                  </>
                 )
               })
             }
