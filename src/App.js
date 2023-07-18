@@ -1,24 +1,127 @@
-import logo from './logo.svg';
-import './App.css';
+import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
+import { BiLastPage, BiFirstPage } from 'react-icons/bi';
+import { useEffect, useState } from 'react';
+
 
 function App() {
+
+  const [rowSize, setRowSize] = useState(5)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [posts, setPosts] = useState([])
+  const [paginatedData, setPaginatedData] = useState([])
+  console.log(posts)
+
+  useEffect(() => {
+    fn_fetchPost()
+  }, [])
+
+  const fn_fetchPost = () => {
+    fetch('https://jsonplaceholder.typicode.com/todos')
+      .then(response => response.json())
+      .then(json => {
+        setPosts(json);
+        fn_paginate(json);
+      })
+  }
+
+  const fn_paginate = (data) => {
+    console.log('data', data)
+    if (data.length > 0) {
+      const startingIndexOfPage = ((currentPage * rowSize) - rowSize);
+      const endingIndexOfPage = ((currentPage * rowSize) - 1) + 1;
+
+      let data1 = []
+      for (let i = startingIndexOfPage; i < endingIndexOfPage; i++) {
+        data1.push(data[i])
+      }
+      setPaginatedData(data1)
+    }
+  }
+
+  useEffect(() => {
+    fn_paginate(posts)
+  }, [currentPage, rowSize])
+
+
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div className="container">
+      <div className="col-md-12 mt-5">
+        <table className="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">Sr. No</th>
+              <th scope="col">Title</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              paginatedData && paginatedData.map((d, i) => {
+                return (
+                  <tr key={i}>
+                    <td scope="row">{d.id}</td>
+                    <td>{d.title}</td>
+                  </tr>
+                )
+              })
+            }
+
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+      <div className=" col-md-12 w-100 d-flex" style={{ justifyContent: "space-between" }}>
+
+        <select className="form-select" style={{ width: "100px" }} onChange={(e) => setRowSize(e.target.value)}>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+        </select>
+
+        <div className="">
+          <div className="btn-group" role="group" aria-label="Basic example">
+
+            <button
+              type="button"
+              className="btn"
+              style={{ backgroundColor: "red", color: "white" }}
+              disabled={currentPage == 1}
+              onClick={() => currentPage > 1 && setCurrentPage(1)}><BiFirstPage /></button>
+            <button
+              type="button"
+              className="btn"
+              disabled={currentPage == 1}
+              style={{ backgroundColor: "#036", color: "white" }}
+              onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}><IoIosArrowBack /></button>
+            <button
+              type="button"
+              className="btn"
+              style={{ backgroundColor: "orange", color: "white" }}
+            >{currentPage} of {Math.ceil(posts.length / rowSize)}</button>
+            <button
+              type="button"
+              className="btn"
+              disabled={Math.ceil(posts.length / rowSize) == currentPage}
+              style={{ backgroundColor: "#036", color: "white" }}
+              onClick={() => currentPage < Math.ceil(posts.length / rowSize) && setCurrentPage(currentPage + 1)}>
+              <IoIosArrowForward />
+            </button>
+            <button
+              type="button"
+              className="btn"
+              disabled={Math.ceil(posts.length / rowSize) == currentPage}
+              style={{ backgroundColor: "red", color: "white" }}
+              onClick={() => currentPage < Math.ceil(posts.length / rowSize) && setCurrentPage(Math.ceil(posts.length / rowSize))}><BiLastPage />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div >
   );
 }
 
